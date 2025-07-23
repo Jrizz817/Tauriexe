@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>⭐ Tauri Script Executor</title>
+
+  <!-- Prism.js Theme -->
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #1a1a2e;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+
+    header {
+      background: #0f0f1f;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px #00000033;
+      border-bottom: 1px solid #333;
+    }
+
+    header .logo {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #ffd700;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header .logo::before {
+      content: '⭐';
+      font-size: 1.2rem;
+    }
+
+    .tabs {
+      display: flex;
+      padding: 0 20px;
+      background: #1f1f38;
+      border-bottom: 1px solid #333;
+      overflow-x: auto;
+    }
+
+    .tab {
+      background: #2b2b4c;
+      padding: 10px 18px;
+      border-radius: 6px 6px 0 0;
+      margin-right: 6px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .tab.active {
+      background: #3a3a66;
+      font-weight: bold;
+    }
+
+    .tab .close {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 14px;
+      color: #aaa;
+      cursor: pointer;
+    }
+
+    .add-tab {
+      background: transparent;
+      border: none;
+      color: #aaa;
+      font-size: 1.5rem;
+      padding: 5px 15px;
+      cursor: pointer;
+    }
+
+    .editor-container {
+      display: none;
+      height: calc(100vh - 170px);
+    }
+
+    .editor-container.active {
+      display: block;
+    }
+
+    .editor-wrapper {
+      position: relative;
+      height: 100%;
+    }
+
+    textarea {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      color: transparent;
+      caret-color: white;
+      border: none;
+      resize: none;
+      font-family: monospace;
+      font-size: 14px;
+      padding: 15px;
+      z-index: 2;
+    }
+
+    pre.highlighted {
+      margin: 0;
+      height: 100%;
+      padding: 15px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 14px;
+      background: #1c1c2e;
+    }
+
+    .controls {
+      background: #0f0f1f;
+      padding: 12px 25px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      border-top: 1px solid #333;
+    }
+
+    .controls button {
+      background: #353570;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.2s;
+    }
+
+    .controls button:hover {
+      background: #44448f;
+      transform: scale(1.05);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 3px;
+    }
+
+    @media screen and (min-width: 1280px) {
+      body {
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">Tauri Script Executor</div>
+    <button class="add-tab" onclick="addTab()">+</button>
+  </header>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="editors"></div>
+
+  <div class="controls">
+    <button onclick="inject()">Inject</button>
+    <button onclick="execute()">Execute</button>
+    <button onclick="clearEditor()">Clear</button>
+  </div>
+
+  <!-- Prism.js -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-lua.min.js"></script>
+
+  <script>
+    let tabCount = 0;
+    let tabs = [];
+    let currentTabId = null;
+
+    function addTab() {
+      const id = `tab-${++tabCount}`;
+
+      const tab = document.createElement('div');
+      tab.className = 'tab';
+      tab.id = id;
+      tab.innerHTML = `Aba ${tabCount} <span class="close" onclick="closeTab(event, '${id}')">&times;</span>`;
+      tab.onclick = () => switchTab(id);
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'editor-container';
+      wrapper.id = `${id}-editor`;
+
+      const editorWrapper = document.createElement('div');
+      editorWrapper.className = 'editor-wrapper';
+
+      const textarea = document.createElement('textarea');
+      textarea.spellcheck = false;
+      textarea.placeholder = '-- Escreva seu script Lua aqui';
+      textarea.oninput = () => updateHighlight(id);
+
+      const pre = document.createElement('pre');
+      pre.className = 'highlighted';
+      const code = document.createElement('code');
+      code.className = 'language-lua';
+      pre.appendChild(code);
+
+      editorWrapper.appendChild(pre);
+      editorWrapper.appendChild(textarea);
+      wrapper.appendChild(editorWrapper);
+
+      document.getElementById('tabs').appendChild(tab);
+      document.getElementById('editors').appendChild(wrapper);
+
+      tabs.push({ id, textarea, code });
+      switchTab(id);
+    }
+
+    function switchTab(id) {
+      tabs.forEach(tab => {
+        const tabEl = document.getElementById(tab.id);
+        const editorEl = document.getElementById(`${tab.id}-editor`);
+        if (tab.id === id) {
+          tabEl.classList.add('active');
+          editorEl.classList.add('active');
+          currentTabId = id;
+          updateHighlight(id);
+        } else {
+          tabEl.classList.remove('active');
+          editorEl.classList.remove('active');
+        }
+      });
+    }
+
+    function closeTab(e, id) {
+      e.stopPropagation();
+      document.getElementById(id)?.remove();
+      document.getElementById(`${id}-editor`)?.remove();
+      tabs = tabs.filter(t => t.id !== id);
+      if (currentTabId === id && tabs.length > 0) {
+        switchTab(tabs[0].id);
+      } else if (tabs.length === 0) {
+        currentTabId = null;
+      }
+    }
+
+    function getCurrentEditor() {
+      return tabs.find(t => t.id === currentTabId);
+    }
+
+    function execute() {
+      const editor = getCurrentEditor();
+      if (editor && window.CzkFUNC) {
+        CzkFUNC.Execute(editor.textarea.value);
+      }
+    }
+
+    function inject() {
+      if (window.CzkFUNC) {
+        CzkFUNC.Inject();
+      }
+    }
+
+    function clearEditor() {
+      const editor = getCurrentEditor();
+      if (editor) {
+        editor.textarea.value = '';
+        updateHighlight(editor.id);
+      }
+    }
+
+    function updateHighlight(id) {
+      const tab = tabs.find(t => t.id === id);
+      if (tab) {
+        tab.code.textContent = tab.textarea.value;
+        Prism.highlightElement(tab.code);
+      }
+    }
+
+    window.onload = addTab;
+  </script>
+</body>
+</html>

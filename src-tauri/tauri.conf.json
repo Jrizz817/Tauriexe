@@ -1,0 +1,32 @@
+{
+  "package": {
+    "productName": "Tauri Executor",
+    "version": "0.1.0"
+  },
+  "tauri": {
+    "windows": [
+      {
+        "title": "⭐ Tauri Executor",
+        "width": 1280,
+        "height": 720,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": false,
+        "visible": true,
+        "transparent": false
+      }
+    ],
+    "security": {
+      "csp": null
+    },
+    "allowlist": {
+      "all": true
+    },
+    "bundle": {
+      "active": true,
+      "identifier": "com.tauriexecute",
+      "icon": [],
+      "targets": ["msi", "appx", "exe"]
+    }
+  }
+}
