@@ -26,7 +26,13 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-          npm install --save-dev @tauri-apps/cli
+          npm install -g @tauri-apps/cli
+
+      - name: Install Tauri prerequisites (webview2)
+        run: |
+          Invoke-WebRequest https://go.microsoft.com/fwlink/p/?LinkId=2124703 -OutFile MicrosoftEdgeWebView2Setup.exe
+          Start-Process MicrosoftEdgeWebView2Setup.exe -ArgumentList "/install", "/silent", "/norestart" -NoNewWindow -Wait
+        shell: pwsh
 
       - name: Build Tauri app
         run: npm run tauri:build
