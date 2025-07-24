@@ -1,16 +1,16 @@
 [package]
-name = "tauri-executor"         # ✅ Corrigido (sem espaços)
+name = "tauri-executor"
 version = "0.1.0"
 description = "Tauri Executor"
 authors = ["Seu Nome"]
 edition = "2021"
 
 [dependencies]
-tauri = { version = "1", features = ["all-api"] }
+tauri = { version = "1", features = ["api-all"] }
 
 [build-dependencies]
 tauri-build = "1"
 
 [[bin]]
 name = "tauri-executor"
-path = "src-tauri/main.rs"      # ✅ Especificado o caminho do main.rs
+path = "src-tauri/main.rs"
