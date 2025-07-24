@@ -6,7 +6,7 @@ authors = ["Seu Nome"]
 edition = "2021"
 
 [dependencies]
-tauri = { version = "1", features = ["api-all"] }
+tauri = { version = "1", features = ["api-all", "custom-protocol"] }
 
 [build-dependencies]
 tauri-build = "1"
