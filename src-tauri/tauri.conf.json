@@ -3,6 +3,12 @@
     "productName": "Tauri Executor",
     "version": "0.1.0"
   },
+  "build": {
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "devPath": "../src",
+    "distDir": "../src"
+  },
   "tauri": {
     "windows": [
       {
@@ -25,8 +31,13 @@
     "bundle": {
       "active": true,
       "identifier": "com.tauriexecute",
-      "icon": [],
-      "targets": ["msi", "appx", "exe"]
+      "icon": ["icons/estrela.ico"],
+      "targets": ["msi", "appx", "exe"],
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
     }
   }
 }
