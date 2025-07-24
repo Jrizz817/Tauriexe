@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>⭐ Tauri Script Executor</title>
-
-  <!-- Prism.js Theme -->
   <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
 
   <style>
@@ -16,25 +14,28 @@
     }
 
     body {
-      background-color: #1a1a2e;
+      background: linear-gradient(135deg, #1e1e2f, #0f0f1f);
       font-family: 'Segoe UI', sans-serif;
       color: white;
       overflow: hidden;
+      height: 100vh;
+      backdrop-filter: blur(6px);
     }
 
     header {
-      background: #0f0f1f;
-      padding: 15px 30px;
+      background: rgba(15, 15, 31, 0.75);
+      padding: 18px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 8px #00000033;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
       border-bottom: 1px solid #333;
+      backdrop-filter: blur(12px);
     }
 
     header .logo {
-      font-size: 1.4rem;
-      font-weight: bold;
+      font-size: 1.5rem;
+      font-weight: 600;
       color: #ffd700;
       letter-spacing: 1px;
       display: flex;
@@ -50,25 +51,32 @@
     .tabs {
       display: flex;
       padding: 0 20px;
-      background: #1f1f38;
-      border-bottom: 1px solid #333;
+      background: rgba(31, 31, 56, 0.8);
+      border-bottom: 1px solid #444;
       overflow-x: auto;
     }
 
     .tab {
-      background: #2b2b4c;
+      background: rgba(50, 50, 80, 0.6);
       padding: 10px 18px;
-      border-radius: 6px 6px 0 0;
+      border-radius: 10px 10px 0 0;
       margin-right: 6px;
       cursor: pointer;
       position: relative;
-      transition: background 0.2s;
+      transition: all 0.2s ease;
       user-select: none;
+      color: #ddd;
+    }
+
+    .tab:hover {
+      background: rgba(60, 60, 100, 0.8);
     }
 
     .tab.active {
       background: #3a3a66;
       font-weight: bold;
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
     }
 
     .tab .close {
@@ -84,9 +92,15 @@
       background: transparent;
       border: none;
       color: #aaa;
-      font-size: 1.5rem;
+      font-size: 1.7rem;
       padding: 5px 15px;
       cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .add-tab:hover {
+      color: #fff;
+      transform: scale(1.15);
     }
 
     .editor-container {
@@ -101,6 +115,10 @@
     .editor-wrapper {
       position: relative;
       height: 100%;
+      border: 1px solid #333;
+      border-radius: 0 0 12px 12px;
+      overflow: hidden;
+      box-shadow: inset 0 0 8px #00000055;
     }
 
     textarea {
@@ -129,11 +147,12 @@
       word-wrap: break-word;
       font-size: 14px;
       background: #1c1c2e;
+      border-radius: 0 0 12px 12px;
     }
 
     .controls {
-      background: #0f0f1f;
-      padding: 12px 25px;
+      background: rgba(15, 15, 31, 0.85);
+      padding: 15px 25px;
       display: flex;
       justify-content: flex-end;
       gap: 15px;
@@ -141,19 +160,20 @@
     }
 
     .controls button {
-      background: #353570;
+      background: linear-gradient(135deg, #353570, #44448f);
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
+      padding: 10px 22px;
+      border-radius: 8px;
       font-size: 14px;
       cursor: pointer;
-      transition: transform 0.15s, background 0.2s;
+      transition: all 0.2s ease;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
     }
 
     .controls button:hover {
-      background: #44448f;
       transform: scale(1.05);
+      background: linear-gradient(135deg, #4545a0, #5a5ad4);
     }
 
     ::-webkit-scrollbar {
@@ -162,7 +182,7 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #555;
+      background: #666;
       border-radius: 3px;
     }
 
