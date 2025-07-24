@@ -32,7 +32,7 @@
       "active": true,
       "identifier": "com.tauriexecute",
       "icon": ["icons/estrela.ico"],
-      "targets": ["msi", "appx", "exe"],
+      "targets": ["msi", "exe"]
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
