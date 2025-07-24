@@ -38,6 +38,13 @@
         "digestAlgorithm": "sha256",
         "timestampUrl": ""
       }
+    },
+    // 👇 ADICIONE ISSO
+    "protocol": {
+      "custom": {
+        "scheme": "app",
+        "handler": "tauri"
+      }
     }
   }
 }
